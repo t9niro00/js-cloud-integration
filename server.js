@@ -86,7 +86,7 @@ let img = (req) => {
 }
 
 app.get('/', function(req, res) {
-  res.send(('API_design.html'))
+  res.sendFile('API_design.html')
 })
 
 
