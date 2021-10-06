@@ -1,0 +1,32 @@
+{
+  "name": "js-cloud-integration",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "chai-http": "^4.3.0",
+    "express": "^4.17.1",
+    "multer": "^1.4.3",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "mocha": "^9.1.2"
+  },
+  "scripts": {
+    "test": "mocha",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/t9niro00/js-cloud-integration.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/t9niro00/js-cloud-integration/issues"
+  },
+  "homepage": "https://github.com/t9niro00/js-cloud-integration#readme"
+  }
+
