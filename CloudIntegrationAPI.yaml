@@ -1,0 +1,335 @@
+openapi: 3.0.0
+info:
+  title: CloudIntegrationAPI
+  version: '1.0'
+  contact:
+    name: Roope
+  description: API-ex
+servers:
+  - url: 'http://localhost:3000'
+paths:
+  /user:
+    post:
+      summary: Create a user
+      tags: []
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  userID:
+                    type: string
+              examples:
+                example-1:
+                  value:
+                    userID: string
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: Missing email field
+      operationId: post-user
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                name:
+                  type: string
+                address:
+                  type: object
+                  required:
+                    - street
+                    - postalcode
+                    - city
+                  properties:
+                    street:
+                      type: string
+                    postalcode:
+                      type: string
+                    city:
+                      type: string
+              required:
+                - username
+                - email
+                - password
+                - name
+                - address
+      description: Create new user
+  /login:
+    post:
+      summary: Create login
+      operationId: post-login
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: login failed
+      security:
+        - Http basic security: []
+      description: Endpoint is used to login with username and password
+  /item:
+    post:
+      summary: Create a new item
+      operationId: post-item
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+              examples:
+                example-1:
+                  value:
+                    id: 0
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: Missing description field
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: Create user or log in
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/item'
+      description: Logged users can create items
+      security:
+        - Http basic security: []
+  '/item/{id}':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    put:
+      summary: Modify a item
+      operationId: put-item-id
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: Missing description field
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: No permission to modify
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: Not found
+      security:
+        - Http basic security: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/item'
+      description: Logged user can modify certain item
+    delete:
+      summary: Delete item
+      operationId: delete-item-id
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/errorResponse'
+              examples:
+                example-1:
+                  value:
+                    errorDescription: No permission to delete item
+        '404':
+          description: Not Found
+      security:
+        - Http basic security: []
+      description: Logged user can delete certain item
+  /item/search:
+    get:
+      summary: Search items
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/item'
+      operationId: get-item-search
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: Category
+        - schema:
+            type: string
+          in: query
+          name: Location
+        - schema:
+            type: string
+            format: date
+            example: '2021-10-06'
+          in: query
+          name: DateOfPosting
+      description: All users can find created items
+components:
+  schemas:
+    item:
+      title: item
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        category:
+          type: object
+          required:
+            - cars
+            - home
+            - clothing
+            - electronic
+            - other
+          properties:
+            cars:
+              type: boolean
+            home:
+              type: boolean
+            clothing:
+              type: boolean
+            electronic:
+              type: boolean
+            other:
+              type: boolean
+        location:
+          type: object
+          required:
+            - city
+            - postalcode
+          properties:
+            city:
+              type: string
+            postalcode:
+              type: number
+        images:
+          type: string
+          description: URL image
+        deliverytype:
+          type: object
+          required:
+            - shipping
+            - pickup
+          properties:
+            shipping:
+              type: boolean
+            pickup:
+              type: boolean
+        contactinfo:
+          type: object
+          required:
+            - sellername
+            - email
+            - phonenumber
+          properties:
+            sellername:
+              type: string
+            email:
+              type: string
+            phonenumber:
+              type: number
+        dateofposting:
+          type: number
+          description: ISO 8601
+      required:
+        - title
+        - description
+        - category
+        - location
+        - deliverytype
+        - contactinfo
+      description: information item should have
+    errorResponse:
+      title: errorResponse
+      type: object
+      description: Return error response
+      x-examples:
+        example-1:
+          errorDescription: string
+      properties:
+        errorDescription:
+          type: string
+  securitySchemes:
+    Http basic security:
+      type: http
+      scheme: basic
+      description: ''
