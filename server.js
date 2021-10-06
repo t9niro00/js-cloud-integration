@@ -86,7 +86,7 @@ let img = (req) => {
 }
 
 app.get('/', function(req, res) {
-  res.sendFile(path.join(__dirname + '/API_design.html'))
+  res.sendFile(path.join('/API_design.html'))
 })
 
 
